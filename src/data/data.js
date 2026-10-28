@@ -258,26 +258,25 @@ export const bagTotal = (bag) =>
     return sum + (p ? effectivePrice(p) * it.qty : 0)
   }, 0)
 
-const ITEM_EMOJI = { festa: '👗', casual: '👚', plus: '👗', acessorios: '✨' }
-
+// Apenas caracteres do plano básico do Unicode: emojis compostos (👗💕🧾)
+// podem virar "�" entre o navegador e o WhatsApp no Windows
 export const buildWhatsAppMessage = (items, sellerName) => {
-  const lines = items.map((it) => {
+  const lines = items.map((it, i) => {
     const p = productById(it.productId)
-    const emoji = ITEM_EMOJI[p.category] ?? '🛍️'
     const unit = effectivePrice(p)
     return (
-      `${emoji} *${p.name}*\n` +
+      `${i + 1}. *${p.name}*\n` +
       `    Tam ${it.size} · ${it.color} · ${it.qty} un × ${brl(unit)}\n` +
       `    Subtotal: ${brl(unit * it.qty)}`
     )
   })
   const total = items.reduce((s, it) => s + effectivePrice(productById(it.productId)) * it.qty, 0)
   let msg =
-    `Olá, Cappri! 💕 Quero fechar meu pedido:\n\n` +
+    `Olá, Cappri! ❤ Quero fechar meu pedido:\n\n` +
     `${lines.join('\n\n')}\n\n` +
     `━━━━━━━━━━━━\n` +
-    `🧾 *Total: ${brl(total)}*`
-  if (sellerName) msg += `\n👩 Atendida por: ${sellerName}`
+    `*Total: ${brl(total)}*`
+  if (sellerName) msg += `\nAtendida por: ${sellerName}`
   return msg
 }
 

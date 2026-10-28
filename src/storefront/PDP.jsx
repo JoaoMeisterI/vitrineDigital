@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useStore } from '../context/StoreContext'
-import { PRODUCTS, COLOR_SWATCHES, brl, effectivePrice, buildWhatsAppMessage, waLink } from '../data/data'
+import { PRODUCTS, COLOR_SWATCHES, brl, effectivePrice } from '../data/data'
 import { Button, Badge, Modal, ColorDot } from '../components/ui'
 import { HeartIcon, WhatsAppIcon, BagIcon, RulerIcon, ChevronLeftIcon } from '../components/icons'
 import { cn } from '../lib/utils'
@@ -35,10 +35,12 @@ export default function PDP({ productId, goBack, openProduct, openCart }) {
     openCart()
   }
 
+  // Joga na sacola e abre o fechamento: o pedido sai sempre completo, com todos os itens
   const handleWhatsApp = () => {
     if (!requireSize()) return
-    const msg = buildWhatsAppMessage([{ productId: product.id, size, color, qty: 1 }])
-    window.open(waLink(msg), '_blank', 'noopener')
+    addToCart({ productId: product.id, size, color, qty: 1 })
+    showToast('Adicionado! Revise a sacola e feche no WhatsApp')
+    openCart()
   }
 
   return (
